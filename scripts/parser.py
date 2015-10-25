@@ -36,16 +36,16 @@ def extractData(reviewType):
 	# pprint(reviewTitleList)
 	# pprint(reviewTextList)
 
-	f2 = codecs.open(reviewTitleFilepath,"w","utf-8")
+	f2 = codecs.open(reviewTitleFilepath,"w+","utf-8")
 	for title in reviewTitleList:
 		f2.write(unicode(title)+'\n')
 	f2.close()
 	
-	with codecs.open(reviewTextFilepath,"w","utf-8") as f1:
+	with codecs.open(reviewTextFilepath,"w+","utf-8") as f1:
 		for text in reviewTextList:
 			f1.write(unicode(text)+'\n')
 
-	with codecs.open(reviewRatingFilepath,"w","utf-8") as f3:
+	with codecs.open(reviewRatingFilepath,"w+","utf-8") as f3:
 		for rating in reviewRatingList:
 			f3.write(unicode(rating)+'\n')
 
