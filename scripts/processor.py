@@ -136,7 +136,10 @@ def get_inverse_document_term_frequency(word):
 
 def remove_stop_words_from_string(string):
     # Remove stop words
-    cachedStopWords = stopwords.words("english").remove('not','nor','no','than','very')
+    cachedStopWords = stopwords.words("english")
+    desiredWords = ['not','nor','no','than','very']
+    for word in desiredWords:
+        cachedStopWords.remove(word)
     clean_string = ' '.join([word for word in string.split() if word not in cachedStopWords])
     return clean_string
 
@@ -216,7 +219,7 @@ def processData(fileFrom, fileTo):
 
 
 if __name__ == '__main__':
-    processData("../raw_data/negative.review_text","../processed_data/negative.review_text")
+    processData("../raw_data/positive.review_text","../processed_data/positive.review_text")
 
     # print spell_check("The big fst boy")
     # get_term_frequency("/home/shiv/ML/ML-Project/raw_data/negative.review_text")
