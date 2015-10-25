@@ -3,6 +3,7 @@ import spellchecker
 import re
 import math
 import codecs
+import csv
 from collections import Counter
 from textblob import TextBlob
 from nltk.stem import WordNetLemmatizer
@@ -95,15 +96,17 @@ def get_tf_if_array(text, frequent_word_list):
     return array
 
 def get_bag_of_words_array(text, bag_of_words):
+    print text
     array = get_empty_array(len(bag_of_words))
     for i in range(0, len(bag_of_words), 1):
-        array[i] = text.count((bag_of_words[i], text))
+        # print bag_of_words[i]
+        array[i] = text.count(bag_of_words[i])
     return array
 
 def get_bigram_array(text, bag_of_bigram):
     array = get_empty_array(len(bag_of_bigram))
     for i in range(0, len(bag_of_bigram), 1):
-        array[i] = get_tf_if(bag_of_bigram[i], text)
+        array[i] = text.count(bag_of_bigram[i])
     return array
 
 def get_term_frequency(word, document):
@@ -127,7 +130,7 @@ def get_document_term_frequency(filename, word_counter):
             for item in array:
                 if word in item:
                     count = count + 1
-            dictionary = {word, count}
+            dictionary = {word: count}
             word_counter.update(dictionary)
     # print word_counter
     f.close()
@@ -176,10 +179,11 @@ def getNGrams(text, n):
         flag = True
         for item in wordList:
             if flag:
-                bigram = item
+                bigram = unicode(item)
                 flag = False
             else:
                 bigram = bigram + " "+ unicode(item)
+        # print type(bigram)
         listofBigrams.append(bigram)
     return listofBigrams
 
@@ -203,20 +207,15 @@ def get_ngram_count(filename, ngram_counter):
     array = getDataFromFile(filename)
     for text in array:
         text = re.sub(' +', " ", text)
-        # print text
     for text in array:
-        print text
         list = getNGrams(text, 2)
-        # print list
         for ngram in list:
             count = 0
-            print ngram
             for line in array:
                 if ngram in line:
                     count = count + 1
-            dictionary = {ngram, count}
+            dictionary = {ngram: count}
             ngram_counter.update(dictionary)
-    print ngram_counter
     return ngram_counter
 
 def getDataFromFile(filename):
@@ -248,10 +247,44 @@ def processData(fileFrom, fileTo):
     # pprint(listofText)
     writeDataToFile(filename=fileTo, dataList=listofText)
 
-if __name__ == '__main__':
+def generate_word_list(counter1 , counter2):
+    list = []
+    list_positive = counter1.most_common(50)
+    list_negative = counter2.most_common(50)
+    for t in list_positive:
+        list.append(t[0])
+    for t in list_negative:
+        list.append(t[0])
+    return list
 
-    get_ngram_count("/home/shiv/ML/ML-Project/processed_data/positive.review_text", ngram_counter_class1)
-    # processData("../raw_data/positive.review_text","../processed_data/positive.review_text")
+if __name__ == '__main__':
+    # processData("../raw_data/negative.review_text","../processed_data/negative.review_text")
+    get_ngram_count("../processed_data/positive.review_text", ngram_counter_class1)
+    get_ngram_count("../processed_data/negative.review_text", ngram_counter_class2)
+    create_term_frequency("../processed_data/positive.review_text", "../processed_data/negative.review_text")
+    bag_of_words = generate_word_list(word_counter_class1, word_counter_class2);
+    bag_of_bigrams = generate_word_list(ngram_counter_class1, ngram_counter_class2);
+
+    array1 = getDataFromFile("../processed_data/positive.review_text")
+    array2 = getDataFromFile("../processed_data/negative.review_text")
+
+    array = []
+    for line in array1:
+        bag_of_words_array = get_bag_of_words_array(line, bag_of_words)
+        bag_of_bigrams_array = get_bigram_array(line, bag_of_bigrams)
+        array.append(bag_of_words_array + bag_of_bigrams_array)
+
+    for line in array2:
+        bag_of_words_array = get_bag_of_words_array(line, bag_of_words)
+        bag_of_bigrams_array = get_bigram_array(line, bag_of_bigrams)
+        array.append(bag_of_words_array + bag_of_bigrams_array)
+
+    with open("../processed_data/features.csv", "wb") as f:
+        writer = csv.writer(f)
+        writer.writerows(array)
+
+    # print word_counter_class1.most_common((100))
+
     # print spell_check("The big fst boy")
     # get_term_frequency("/home/shiv/ML/ML-Project/raw_data/negative.review_text")
     # get_inverse_document_term_frequency("/home/shiv/ML/ML-Project/raw_data/positive.review_text")
