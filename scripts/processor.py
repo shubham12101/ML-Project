@@ -2,12 +2,15 @@ import nltk
 import spellchecker
 import re
 import math
-from collections import Counter
 import codecs
+from collections import Counter
 from textblob import TextBlob
 from nltk.stem import WordNetLemmatizer
+from nltk.stem.porter import PorterStemmer
 from nltk.tokenize import TweetTokenizer
 from collections import Counter
+from nltk.corpus import stopwords
+from pprint import pprint
 
 word_counter_class1 = Counter()
 word_counter_class2 = Counter()
@@ -32,6 +35,10 @@ def lemmatizer(word):
     """
     wordnet_lemmatizer = WordNetLemmatizer()
     return wordnet_lemmatizer.lemmatize(word)
+
+def stemmer(text):
+    pStemmer = PorterStemmer()
+    return pStemmer.stem(text)
 
 def tagger(text):
     """
@@ -127,6 +134,12 @@ def get_inverse_document_term_frequency(word):
     # print log
     return log
 
+def remove_stop_words_from_string(string):
+    # Remove stop words
+    cachedStopWords = stopwords.words("english").remove('not','nor','no','than','very')
+    clean_string = ' '.join([word for word in string.split() if word not in cachedStopWords])
+    return clean_string
+
 def removePunc(text):
     emoticonList = [":)", ":-)", ":(", ":-(", ":')", ":'(", ":D", ":-D", ":P", ":p", ":-p", ":P", ":*", ";)", ";-)", ";(", ";-(", "B)", "B-)"]
     tknzr = TweetTokenizer()
@@ -139,7 +152,10 @@ def removePunc(text):
                 flag = False
             else:
                 newText = newText + " " + unicode(item).lower()
-    return newText
+    if not flag:
+        return newText
+    else:
+        return None
 
 def getNGrams(text, n):
     blob = TextBlob(text)
@@ -157,7 +173,7 @@ def getNGrams(text, n):
     return listofBigrams
 
 def getWordCount(filename):
-    f = codecs.open(filename, 'r')
+    f = open(filename, 'r')
     wordcount = Counter(f.read().split())
     return wordcount
 
@@ -169,7 +185,39 @@ def getMostFreqWordsList(filename, ctr):
         mostFreqWordsList.append(word[0])
     return mostFreqWordsList
 
+def getDataFromFile(filename):
+    f = open(filename, 'r')
+    dataList = []
+    for line in f:
+        dataList.append(line)
+    f.close()
+    return dataList
+
+def writeDataToFile(filename, dataList):
+    f = codecs.open(filename, 'w', 'utf-8')
+    for data in dataList:
+        f.write(unicode(data+"\n"))
+    f.close()
+    return dataList
+
+def processData(fileFrom, fileTo):
+    textList = getDataFromFile(fileFrom)
+    listofText = []
+    for text in textList:
+        if text != "\n":
+            text1 = removePunc(text)
+            text1 = remove_stop_words_from_string(text1)
+            # text1 = spell_check(text1)
+            text1 = lemmatizer(text1)
+            # text1 = stemmer(text1)
+            listofText.append(text1)
+    # pprint(listofText)
+    writeDataToFile(filename=fileTo, dataList=listofText)
+
+
 if __name__ == '__main__':
+    processData("../raw_data/negative.review_text","../processed_data/negative.review_text")
+
     # print spell_check("The big fst boy")
     # get_term_frequency("/home/shiv/ML/ML-Project/raw_data/negative.review_text")
-    get_inverse_document_term_frequency("/home/shiv/ML/ML-Project/raw_data/positive.review_text")
+    # get_inverse_document_term_frequency("/home/shiv/ML/ML-Project/raw_data/positive.review_text")
