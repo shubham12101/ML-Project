@@ -11,6 +11,8 @@ from collections import Counter
 
 word_counter_class1 = Counter()
 word_counter_class2 = Counter()
+ngram_counter_class1 = Counter()
+ngram_counter_class2 = Counter()
 count_class1 = 0
 count_class2 = 0
 
@@ -79,16 +81,23 @@ def get_empty_array(size):
         list.append(0)
     return list
 
-def create_tf_if_file(filename, frequent_word_list, outputfile):
-    f1 = open(filename, 'r')
-    f2 = open(outputfile, 'w+')
-    for line in f.readlines():
-        list = get_empty_array(len(frequent_word_list))
-        for i in range(0, len(frequent_word_list), 1):
-            list[i] = get_tf_if(frequent_word_list[i], line)
-        f2.write(get_array_string(list)+"\n")
-    f1.close()
-    f2.close()
+def get_tf_if_array(text, frequent_word_list):
+    array = get_empty_array(len(frequent_word_list))
+    for i in range(0, len(frequent_word_list), 1):
+        array[i] = get_tf_if(frequent_word_list[i], text)
+    return array
+
+def get_bag_of_words_array(text, bag_of_words):
+    array = get_empty_array(len(bag_of_words))
+    for i in range(0, len(bag_of_words), 1):
+        array[i] = text.count((bag_of_words[i], text))
+    return array
+
+def get_bigram_array(text, bag_of_bigram):
+    array = get_empty_array(len(bag_of_bigram))
+    for i in range(0, len(bag_of_bigram), 1):
+        array[i] = get_tf_if(bag_of_bigram[i], text)
+    return array
 
 def get_term_frequency(word, document):
     if word in document:
@@ -100,7 +109,6 @@ def get_tf_if(word, document):
     tf = get_term_frequency(word, document)
     inverse_frequency = get_inverse_document_term_frequency(word)
     return tf * inverse_frequency
-
 
 def get_document_term_frequency(filename, word_counter):
     f = open(filename, 'r')
@@ -169,7 +177,27 @@ def getMostFreqWordsList(filename, ctr):
         mostFreqWordsList.append(word[0])
     return mostFreqWordsList
 
+def get_ngram_count(filename, ngram_counter):
+    f = open(filename, "r")
+    array = f.readlines()
+    for text in array:
+        text = re.sub("[^\w]", " ", text)
+
+    for text in array:
+        list = getNGrams(text, 2)
+        for ngram in list:
+            count = 0
+            for line in array:
+                if ngram in line:
+                    count = count + 1
+            dictionary = {ngram, count}
+            ngram_counter.update(dictionary)
+    print ngram_counter
+    f.close()
+    return ngram_counter
+
 if __name__ == '__main__':
     # print spell_check("The big fst boy")
     # get_term_frequency("/home/shiv/ML/ML-Project/raw_data/negative.review_text")
     get_inverse_document_term_frequency("/home/shiv/ML/ML-Project/raw_data/positive.review_text")
+    get_ngram_count(,ngram_counter_class1)
