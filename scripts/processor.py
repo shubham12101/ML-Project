@@ -3,6 +3,7 @@ import spellchecker
 from autocorrect import spell
 from textblob import TextBlob
 from nltk.stem import WordNetLemmatizer
+from nltk.tokenize import TweetTokenizer
 
 def lemmatizer(word):
     """
@@ -43,5 +44,19 @@ def tokenize(text):
     token_text = text.split(' ')
     return token_text
 
-# if __name__ == '__main__':
-#     print spell_check("The big fst boy")
+def removePunc(text):
+    emoticonList = [":)", ":-)", ":(", ":-(", ":')", ":'(", ":D", ":-D", ":P", ":p", ":-p", ":P", ":*", ";)", ";-)", ";(", ";-("]
+    tknzr = TweetTokenizer()
+    listOfTokens = tknzr.tokenize(text)
+    flag = True
+    for item in listOfTokens:
+        if (item.isalnum() or (item in emoticonList)):
+            if flag:
+                newText = item.lower()
+                flag = False
+            else:
+                newText = newText + " " + unicode(item).lower()
+    return newText
+
+if __name__ == '__main__':
+    print removePunc("Suck my DICK!!!! Will you? :)")
