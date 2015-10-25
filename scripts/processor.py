@@ -45,7 +45,7 @@ def tokenize(text):
     return token_text
 
 def removePunc(text):
-    emoticonList = [":)", ":-)", ":(", ":-(", ":')", ":'(", ":D", ":-D", ":P", ":p", ":-p", ":P", ":*", ";)", ";-)", ";(", ";-("]
+    emoticonList = [":)", ":-)", ":(", ":-(", ":')", ":'(", ":D", ":-D", ":P", ":p", ":-p", ":P", ":*", ";)", ";-)", ";(", ";-(", "B)", "B-)"]
     tknzr = TweetTokenizer()
     listOfTokens = tknzr.tokenize(text)
     flag = True
@@ -58,5 +58,22 @@ def removePunc(text):
                 newText = newText + " " + unicode(item).lower()
     return newText
 
+def getNGrams(text, n):
+    blob = TextBlob(text)
+    listofBlobs = blob.ngrams(n)
+    listofBigrams = []
+    for wordList in listofBlobs:
+        flag = True
+        for item in wordList:
+            if flag:
+                bigram = item
+                flag = False
+            else:
+                bigram = bigram + " "+ unicode(item)
+        listofBigrams.append(bigram)
+    return listofBigrams
+
+
 if __name__ == '__main__':
-    print removePunc("Suck my DICK!!!! Will you? :)")
+    kandi = removePunc("I am Kandi!!!! And I know it, do you? ;)")
+    print getNGrams(text=kandi, n=2)
