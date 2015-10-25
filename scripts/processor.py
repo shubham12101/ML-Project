@@ -154,7 +154,7 @@ def removePunc(text):
     listOfTokens = tknzr.tokenize(text)
     flag = True
     for item in listOfTokens:
-        if (item.isalnum() or (item in emoticonList)):
+        if (item.isalpha() or (item in emoticonList)):
             if flag:
                 newText = item.lower()
                 flag = False
