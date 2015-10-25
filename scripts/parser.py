@@ -26,19 +26,20 @@ def extractData(reviewType):
 
 	for review in root.findall('review'):
 		reviewTitle = review.find('title')
-		reviewTitleList.append(reviewTitle.text.replace('\n',' '))
+		reviewTitleList.append(reviewTitle.text.replace('\n',''))
 		reviewText = review.find('review_text')
-		reviewTextList.append(reviewText.text.replace('\n',' '))
+		reviewTextList.append(reviewText.text.replace('\n',''))
 		reviewRating = review.find('rating')
-		reviewRatingList.append(reviewRating.text.replace('\n',' '))
+		reviewRatingList.append(reviewRating.text.replace('\n',''))
 	
 	# pprint(reviewRatingList)
 	# pprint(reviewTitleList)
 	# pprint(reviewTextList)
 
-	with codecs.open(reviewTitleFilepath,"w","utf-8") as f2:
-		for title in reviewTitleList:
-			f2.write(unicode(title)+'\n')
+	f2 = codecs.open(reviewTitleFilepath,"w","utf-8")
+	for title in reviewTitleList:
+		f2.write(unicode(title)+'\n')
+	f2.close()
 	
 	with codecs.open(reviewTextFilepath,"w","utf-8") as f1:
 		for text in reviewTextList:

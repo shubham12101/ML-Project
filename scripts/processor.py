@@ -1,8 +1,24 @@
 import nltk
 import spellchecker
-from autocorrect import spell
-from textblob import TextBlob
+import re
+import math
+from collections import Counter
 from nltk.stem import WordNetLemmatizer
+
+word_counter_class1 = Counter()
+word_counter_class2 = Counter()
+count_class1 = 0
+count_class2 = 0
+
+def create_term_frequency(file1, file2):
+    get_document_term_frequency(file1, word_counter_class1)
+    get_document_term_frequency(file2, word_counter_class2)
+    count_class1 = get_number_of_lines_in_file(file1)
+    count_class2 = get_number_of_lines_in_file(file2)
+
+def get_number_of_lines_in_file(file):
+    f = open(file)
+    return len(f.readlines())
 
 def lemmatizer(word):
     """
@@ -43,5 +59,71 @@ def tokenize(text):
     token_text = text.split(' ')
     return token_text
 
-# if __name__ == '__main__':
-#     print spell_check("The big fst boy")
+def get_array_string(list):
+    string = str(list)
+    string = remove_brackets_from_string(string)
+    return string
+
+def remove_brackets_from_string(string):
+    result = string.replace("[", "")
+    result = result.replace("]", "")
+    return result
+
+def get_empty_array(size):
+    list = []
+    for i in range(0,size,1):
+        list.append(0)
+    return list
+
+def create_tf_if_file(filename, frequent_word_list, outputfile):
+    f1 = open(filename, 'r')
+    f2 = open(outputfile, 'w+')
+    for line in f.readlines():
+        list = get_empty_array(len(frequent_word_list))
+        for i in range(0, len(frequent_word_list), 1):
+            list[i] = get_tf_if(frequent_word_list[i], line)
+        f2.write(get_array_string(list)+"\n")
+    f1.close()
+    f2.close()
+
+def get_term_frequency(word, document):
+    if word in document:
+        return document.count(word)
+    else:
+        return 0
+
+def get_tf_if(word, document):
+    tf = get_term_frequency(word, document)
+    inverse_frequency = get_inverse_document_term_frequency(word)
+    return tf * inverse_frequency
+
+
+def get_document_term_frequency(filename, word_counter):
+    f = open(filename, 'r')
+    array = f.readlines()
+    for line in array:
+        word_list = re.sub("[^\w]", " ",  line).split()
+        for word in word_list:
+            count = 0
+            for item in array:
+                if word in item:
+                    count = count + 1
+            dictionary = {word, count}
+            word_counter.update(dictionary)
+    # print word_counter
+    f.close()
+    return word_counter
+
+def get_inverse_document_term_frequency(word):
+    word_counter_dictionary = dict(word_counter_class1)
+    word_count = word_counter_dictionary.get(word, default=0)
+    frequency = float(word_count/count_class1)
+    frequency = 1/frequency
+    log = math.log(frequency, math.e)
+    # print log
+    return log
+
+if __name__ == '__main__':
+    # print spell_check("The big fst boy")
+    # get_term_frequency("/home/shiv/ML/ML-Project/raw_data/negative.review_text")
+    get_inverse_document_term_frequency("/home/shiv/ML/ML-Project/raw_data/positive.review_text")
