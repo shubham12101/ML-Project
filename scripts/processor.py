@@ -1,9 +1,11 @@
 import nltk
 import spellchecker
+import codecs
 from autocorrect import spell
 from textblob import TextBlob
 from nltk.stem import WordNetLemmatizer
 from nltk.tokenize import TweetTokenizer
+from collections import Counter
 
 def lemmatizer(word):
     """
@@ -73,7 +75,20 @@ def getNGrams(text, n):
         listofBigrams.append(bigram)
     return listofBigrams
 
+def getWordCount(filename):
+    f = codecs.open(filename, 'r')
+    wordcount = Counter(f.read().split())
+    return wordcount
+
+def getMostFreqWordsList(filename, ctr):
+    wordCounter = getWordCount(filename)
+    mostCommonWordList = wordCounter.most_common(ctr)
+    mostFreqWordsList = []
+    for word in mostCommonWordList:
+        mostFreqWordsList.append(word[0])
+    return mostFreqWordsList
 
 if __name__ == '__main__':
-    kandi = removePunc("I am Kandi!!!! And I know it, do you? ;)")
-    print getNGrams(text=kandi, n=2)
+    print getMostFreqWordsList("../raw_data/positive.review_text", 100)
+    # kandi = removePunc("I am Kandi!!!! And I know it, do you? ;)")
+    # print getNGrams(text=kandi, n=2)
