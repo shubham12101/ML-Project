@@ -96,7 +96,7 @@ def get_tf_if_array(text, frequent_word_list):
     return array
 
 def get_bag_of_words_array(text, bag_of_words):
-    print text
+    # print text
     array = get_empty_array(len(bag_of_words))
     for i in range(0, len(bag_of_words), 1):
         # print bag_of_words[i]
@@ -227,7 +227,7 @@ def getDataFromFile(filename):
     return dataList
 
 def writeDataToFile(filename, dataList):
-    f = codecs.open(filename, 'w', 'utf-8')
+    f = codecs.open(filename, 'wb', 'utf-8')
     for data in dataList:
         f.write(unicode(data+"\n"))
     f.close()
@@ -257,34 +257,58 @@ def generate_word_list(counter1 , counter2):
         list.append(t[0])
     return list
 
+def write_array_to_csv(output_file, arr):
+    with open(output_file, "wb") as output:
+        writer = csv.writer(output)
+        writer.writerows(arr)
+
+def create_test_label_file(input_file, output_file):
+    input_data = getDataFromFile(input_file)
+    output = []
+    for input in input_data:
+        input = float(input)
+        if(input > 3):
+            output.append(1)
+        else:
+            output.append(0)
+    write_data_to_file(output_file, output)
+
+def write_data_to_file(filename, dataList):
+    f = codecs.open(filename, 'wb', 'utf-8')
+    for data in dataList:
+        f.write(unicode((str(data)+"\n")))
+    f.close()
+    return dataList
+
 if __name__ == '__main__':
+    create_test_label_file("../raw_data/unlabeled.review_rating", "../processed_data/unlabled.review_labels")
     # processData("../raw_data/negative.review_text","../processed_data/negative.review_text")
-    get_ngram_count("../processed_data/positive.review_text", ngram_counter_class1)
-    get_ngram_count("../processed_data/negative.review_text", ngram_counter_class2)
-    create_term_frequency("../processed_data/positive.review_text", "../processed_data/negative.review_text")
-    bag_of_words = generate_word_list(word_counter_class1, word_counter_class2)
-    bag_of_bigrams = generate_word_list(ngram_counter_class1, ngram_counter_class2)
+    # get_ngram_count("../processed_data/positive.review_text", ngram_counter_class1)
+    # get_ngram_count("../processed_data/negative.review_text", ngram_counter_class2)
+    # create_term_frequency("../processed_data/positive.review_text", "../processed_data/negative.review_text")
+    # bag_of_words = generate_word_list(word_counter_class1, word_counter_class2)
+    # bag_of_bigrams = generate_word_list(ngram_counter_class1, ngram_counter_class2)
+    #
+    # writeDataToFile("../processed_data/bag_of_words.list",bag_of_words)
+    # writeDataToFile("../processed_data/bag_of_bigrams.list",bag_of_bigrams)
 
-    writeDataToFile("../processed_data/bag_of_words.list",bag_of_words)
-    writeDataToFile("../processed_data/bag_of_bigrams.list",bag_of_bigrams)
-
-    array1 = getDataFromFile("../processed_data/positive.review_text")
-    array2 = getDataFromFile("../processed_data/negative.review_text")
-
-    array = []
-    for line in array1:
-        bag_of_words_array = get_bag_of_words_array(line, bag_of_words)
-        bag_of_bigrams_array = get_bigram_array(line, bag_of_bigrams)
-        array.append(bag_of_words_array + bag_of_bigrams_array)
-
-    for line in array2:
-        bag_of_words_array = get_bag_of_words_array(line, bag_of_words)
-        bag_of_bigrams_array = get_bigram_array(line, bag_of_bigrams)
-        array.append(bag_of_words_array + bag_of_bigrams_array)
-
-    with open("../processed_data/features.csv", "wb") as f:
-        writer = csv.writer(f)
-        writer.writerows(array)
+    # array1 = getDataFromFile("../processed_data/positive.review_text")
+    # array2 = getDataFromFile("../processed_data/negative.review_text")
+    #
+    # array = []
+    # for line in array1:
+    #     bag_of_words_array = get_bag_of_words_array(line, bag_of_words)
+    #     bag_of_bigrams_array = get_bigram_array(line, bag_of_bigrams)
+    #     array.append(bag_of_words_array + bag_of_bigrams_array)
+    #
+    # for line in array2:
+    #     bag_of_words_array = get_bag_of_words_array(line, bag_of_words)
+    #     bag_of_bigrams_array = get_bigram_array(line, bag_of_bigrams)
+    #     array.append(bag_of_words_array + bag_of_bigrams_array)
+    #
+    # with open("../processed_data/features.csv", "wb") as f:
+    #     writer = csv.writer(f)
+    #     writer.writerows(array)
 
     # print word_counter_class1.most_common((100))
 
