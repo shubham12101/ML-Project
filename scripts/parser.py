@@ -4,7 +4,7 @@ from lxml import etree
 import codecs
 
 # ==========CONSTANTS============
-REVIEW_TYPE = 'positive'
+REVIEW_TYPE = 'unlabeled'
 
 def extractData(reviewType):
 	
@@ -25,12 +25,12 @@ def extractData(reviewType):
 	# root = tree.getroot()
 
 	for review in root.findall('review'):
+		reviewRating = review.find('rating')
+		reviewRatingList.append(reviewRating.text.replace('\n',''))
 		reviewTitle = review.find('title')
 		reviewTitleList.append(reviewTitle.text.replace('\n',''))
 		reviewText = review.find('review_text')
 		reviewTextList.append(reviewText.text.replace('\n',''))
-		reviewRating = review.find('rating')
-		reviewRatingList.append(reviewRating.text.replace('\n',''))
 	
 	# pprint(reviewRatingList)
 	# pprint(reviewTitleList)

@@ -262,8 +262,11 @@ if __name__ == '__main__':
     get_ngram_count("../processed_data/positive.review_text", ngram_counter_class1)
     get_ngram_count("../processed_data/negative.review_text", ngram_counter_class2)
     create_term_frequency("../processed_data/positive.review_text", "../processed_data/negative.review_text")
-    bag_of_words = generate_word_list(word_counter_class1, word_counter_class2);
-    bag_of_bigrams = generate_word_list(ngram_counter_class1, ngram_counter_class2);
+    bag_of_words = generate_word_list(word_counter_class1, word_counter_class2)
+    bag_of_bigrams = generate_word_list(ngram_counter_class1, ngram_counter_class2)
+
+    writeDataToFile("../processed_data/bag_of_words.list",bag_of_words)
+    writeDataToFile("../processed_data/bag_of_bigrams.list",bag_of_bigrams)
 
     array1 = getDataFromFile("../processed_data/positive.review_text")
     array2 = getDataFromFile("../processed_data/negative.review_text")
