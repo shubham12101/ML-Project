@@ -15,8 +15,8 @@ from pprint import pprint
 
 word_counter_class1 = Counter()
 word_counter_class2 = Counter()
-ngram_counter_class1 = Counter()
-ngram_counter_class2 = Counter()
+bigram_counter_class1 = Counter()
+bigram_counter_class2 = Counter()
 count_class1 = 0
 count_class2 = 0
 
@@ -200,7 +200,7 @@ def getMostFreqWordsList(filename, ctr):
         mostFreqWordsList.append(word[0])
     return mostFreqWordsList
 
-def get_ngram_count(filename, ngram_counter):
+def get_ngram_count(filename, ngram_counter, n):
     # f = codecs.open(filename, "r","utf-8")
     # array = f.readlines()
     # print type(array)
@@ -208,10 +208,11 @@ def get_ngram_count(filename, ngram_counter):
     for text in array:
         text = re.sub(' +', " ", text)
     for text in array:
-        list = getNGrams(text, 2)
+        list = getNGrams(text, n)
         for ngram in list:
+            print ngram
             count = 0
-            for line in array:
+            for line in array:                
                 if ngram in line:
                     count = count + 1
             dictionary = {ngram: count}
@@ -234,6 +235,7 @@ def writeDataToFile(filename, dataList):
     return dataList
 
 def processData(fileFrom, fileTo):
+    print fileFrom
     textList = getDataFromFile(fileFrom)
     listofText = []
     for text in textList:
@@ -244,7 +246,7 @@ def processData(fileFrom, fileTo):
             text1 = lemmatizer(text1)
             # text1 = stemmer(text1)
             listofText.append(text1)
-    # pprint(listofText)
+    pprint(listofText)
     writeDataToFile(filename=fileTo, dataList=listofText)
 
 def generate_word_list(counter1 , counter2):
@@ -348,21 +350,30 @@ def getNegativeStarredReviews(negativeReview, twoStarredFile, oneStarredFile, la
 
 if __name__ == '__main__':
     # getPositiveStarredReviews("../raw_data/positive.review_text","../raw_data/five_starred.review_text","../raw_data/four_starred.review_text","../raw_data/positive.review_rating","../processed_data/positive_starred.review_labels")
-    getNegativeStarredReviews("../raw_data/negative.review_text","../raw_data/two_starred.review_text","../raw_data/one_starred.review_text","../raw_data/negative.review_rating","../processed_data/negative_starred.review_labels")
+    # getNegativeStarredReviews("../raw_data/negative.review_text","../raw_data/two_starred.review_text","../raw_data/one_starred.review_text","../raw_data/negative.review_rating","../processed_data/negative_starred.review_labels")
     # create_positive_test_label_file("../raw_data/unlabeled.review_rating", "../processed_data/positive.review_labels")
     # create_negative_test_label_file("../raw_data/unlabeled.review_rating", "../processed_data/negative.review_labels")
 
+
+    print "ok"
     # create_test_label_file("../raw_data/unlabeled.review_rating", "../processed_data/unlabled.review_labels")
-    # processData("../raw_data/negative.review_text","../processed_data/negative.review_text")
-    # processData("../raw_data/positive.review_text","../processed_data/positive.review_text")
-    # get_ngram_count("../processed_data/positive.review_text", ngram_counter_class1)
-    # get_ngram_count("../processed_data/negative.review_text", ngram_counter_class2)
-    # create_term_frequency("../processed_data/positive.review_text", "../processed_data/negative.review_text")
-    # bag_of_words = generate_word_list(word_counter_class1, word_counter_class2)
-    # bag_of_bigrams = generate_word_list(ngram_counter_class1, ngram_counter_class2)
+    typ = 'type2'
+    folderpath = "../types/" + typ + "/"
+    processData(folderpath + "raw_data/" + typ + "_negative.review_text", folderpath + "processed_data/" + typ + "_negative.review_text")
+    processData(folderpath + "raw_data/" + typ + "_positive.review_text",folderpath + "processed_data/" + typ + "_positive.review_text")
+
+    get_ngram_count(folderpath + "processed_data/" + typ + "_positive.review_text", bigram_counter_class1, 2)
+    get_ngram_count(folderpath + "processed_data/" + typ + "_negative.review_text", bigram_counter_class2, 2)
+
+    get_ngram_count(folderpath + "processed_data/" + typ + "_positive.review_text", word_counter_class1, 1)
+    get_ngram_count(folderpath + "processed_data/" + typ + "_negative.review_text", word_counter_class2, 1)   
+
+    # # create_term_frequency("../processed_data/positive.review_text", "../processed_data/negative.review_text")
+    bag_of_words = generate_word_list(word_counter_class1, word_counter_class2)
+    bag_of_bigrams = generate_word_list(bigram_counter_class1, bigram_counter_class2)
     
-    # writeDataToFile("../processed_data/bag_of_words.list",bag_of_words)
-    # writeDataToFile("../processed_data/bag_of_bigrams.list",bag_of_bigrams)
+    writeDataToFile(folderpath + "processed_data/" + typ +"_bag_of_words.list",bag_of_words)
+    writeDataToFile(folderpath + "processed_data/" + typ +"_bag_of_bigrams.list",bag_of_bigrams)
 
     # array1 = getDataFromFile("../processed_data/positive.review_text")
     # array2 = getDataFromFile("../processed_data/negative.review_text")
@@ -379,6 +390,7 @@ if __name__ == '__main__':
     #     array.append(bag_of_words_array + bag_of_bigrams_array)
     
     # with open("../processed_data/features.csv", "wb") as f:
+
     #     writer = csv.writer(f)
     #     writer.writerows(array)
 

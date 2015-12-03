@@ -2,6 +2,8 @@ import xml.etree.ElementTree as ET
 from pprint import pprint
 from lxml import etree
 import codecs
+from os import listdir
+from os.path import isfile, join
 
 # ==========CONSTANTS============
 
@@ -29,11 +31,11 @@ def combineFiles(outputFilepath, listOfFilepaths):
 	f1.close()
 
 
-def extractData(reviewType):
-	fileName = '../raw_data/'+reviewType+'.review'
-	reviewTitleFilepath = '../raw_data/'+reviewType+'.review_title'
-	reviewTextFilepath = '../raw_data/'+reviewType+'.review_text'
-	reviewRatingFilepath = '../raw_data/'+reviewType+'.review_rating'
+def extractData(filepath):
+	fileName = filepath
+	reviewTitleFilepath = filepath + '_title'
+	reviewTextFilepath = filepath  +'_text'
+	reviewRatingFilepath = filepath +'_rating'
 	
 	reviewTextList = []
 	reviewRatingList = []
@@ -70,11 +72,28 @@ def extractData(reviewType):
 			f3.write(unicode(rating)+'\n')
 
 if __name__ == '__main__':
-	# appendRootNode("../raw_data/categorical_data/positive_sports.review")
-	# strings = ["sports","electronics","music","software"]
-	# listOfFiles = ["../raw_data/categorical_data/positive_sports.review","../raw_data/categorical_data/positive_electronics.review","../raw_data/categorical_data/positive_music.review","../raw_data/categorical_data/positive_software.review"]
-	# for name in listOfFiles:
-		# appendRootNode(name)
-	# combineFiles("../raw_data/positive.review",listOfFiles)
-	appendRootNode("../raw_data/categorical_data/negative_sports.review")
-	extractData(reviewType = "/categorical_data/negative_sports")
+	cls = 'negative'
+	# cls = 'positive'	
+	typ = 'type2'
+	# # appendRootNode("../raw_data/categorical_data/positive_sports.review")
+	# # strings = ["sports","electronics","music","software"]
+	# # listOfFiles = ["../types/categorical_data/type1/camera_&_photo/"+typ+"_camera_&_photo.review","../raw_data/categorical_data/type1/cell_phones_&_service/negative_cell_phones_&_service.review","../raw_data/categorical_data/type1/computer_&_video_games/negative_computer_&_video_games.review","../raw_data/categorical_data/type1/dvd/negative_dvd.review","../raw_data/categorical_data/type1/electronics/negative_electronics.review"]
+	listOfFiles = []
+	filepath = "../types/"+typ+"/data/"
+	for folder in listdir(filepath):		
+		if isfile(folder):
+			continue
+		folderpath = filepath + folder
+		print folderpath
+		for f in listdir(folderpath):
+			if cls in str(f):
+				listOfFiles.append(join(folderpath, f))
+
+	# print listOfFiles
+	for name in listOfFiles:
+		appendRootNode(name)
+	completeName = join("../types/"+typ+"/raw_data/", typ+"_"+cls+".review") 
+	print completeName
+	combineFiles(completeName , listOfFiles)
+	# appendRootNode("../raw_data/categorical_data/negative_sports.review")
+	extractData(completeName)
