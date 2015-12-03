@@ -26,13 +26,15 @@ def file_to_array(input_file):
     return array
 
 if __name__ == '__main__':
+    typ = 'type1'
+    folderpath = "../types/" + typ + "/processed_data/"+typ+"_"
     # Processor.processData("../raw_data/unlabeled.review_text", "../processed_data/unlabeled.review_text")
     # extract_features_from_file("../processed_data/unlabeled.review_text", "../processed_data/test_features.csv")
-    bag_of_words =  file_to_array("../processed_data/bag_of_bigrams.list")
-    bag_of_bigrams =  file_to_array("../processed_data/bag_of_bigrams.list")
+    bag_of_words =  file_to_array(folderpath + "bag_of_words.list")
+    bag_of_bigrams =  file_to_array(folderpath  + "bag_of_bigrams.list")
 
-    array1 = Processor.getDataFromFile("../processed_data/positive.review_text")
-    array2 = Processor.getDataFromFile("../processed_data/negative.review_text")
+    array1 = Processor.getDataFromFile(folderpath + "positive.review_text")
+    array2 = Processor.getDataFromFile(folderpath + "negative.review_text")
     
     array = []
     for line in array1:
@@ -45,6 +47,7 @@ if __name__ == '__main__':
         bag_of_bigrams_array = Processor.get_bigram_array(line, bag_of_bigrams)
         array.append(bag_of_words_array + bag_of_bigrams_array)
     
-    with open("../processed_data/features.csv", "wb") as f:
+    f = folderpath + "features.csv"
+    with open(f, "wb") as f:
         writer = csv.writer(f)
         writer.writerows(array)
