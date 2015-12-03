@@ -219,7 +219,7 @@ def get_ngram_count(filename, ngram_counter):
     return ngram_counter
 
 def getDataFromFile(filename):
-    f = codecs.open(filename, 'r','utf-8')
+    f = codecs.open(filename, 'r',encoding='utf-8', errors='ignore')
     dataList = []
     for line in f:
         dataList.append(line)
@@ -268,19 +268,90 @@ def create_test_label_file(input_file, output_file):
     for input in input_data:
         input = float(input)
         if(input > 3):
-            output.append(1)
+            output.append('1')
         else:
-            output.append(0)
+            output.append('0')
+    write_data_to_file(output_file, output)
+
+def create_positive_test_label_file(input_file, output_file):
+    input_data = getDataFromFile(input_file)
+    output = []
+    for input in input_data:
+        input = float(input)
+        if(input == 5):
+            output.append('1')
+        elif (input == 4):
+            output.append('0')
+    write_data_to_file(output_file, output)
+
+def create_negative_test_label_file(input_file, output_file):
+    input_data = getDataFromFile(input_file)
+    output = []
+    for input in input_data:
+        input = float(input)
+        if(input == 2):
+            output.append('1')
+        elif (input == 1):
+            output.append('0')
     write_data_to_file(output_file, output)
 
 def write_data_to_file(filename, dataList):
-    f = codecs.open(filename, 'wb', 'utf-8')
+    f = codecs.open(filename, 'w', encoding='utf-8', errors='ignore')
     for data in dataList:
-        f.write(unicode((str(data)+"\n")))
+        # f.write(unicode((str(data.rstrip('\r\n'))+"\n")))
+        f.write(data.rstrip('\r\n')+"\n")
     f.close()
     return dataList
 
+def getPositiveStarredReviews(positiveReview, fiveStarredFile, fourStarredFile, labelFile, positiveStarredLabelFile):
+    input_data = getDataFromFile(labelFile)
+    review_data = getDataFromFile(positiveReview)
+
+    fiveStarredList = []
+    fourStarredList = []
+    positiveStarredLabelList = []
+    i = 0
+    for item in input_data:
+        item = float(item)
+        if(item == 5):
+            fiveStarredList.append(review_data[i])
+            positiveStarredLabelList.append('1')
+        else:
+            fourStarredList.append(review_data[i])
+            positiveStarredLabelList.append('0')
+        i += 1
+    write_data_to_file(fiveStarredFile, fiveStarredList)
+    write_data_to_file(fourStarredFile, fourStarredList)
+    write_data_to_file(positiveStarredLabelFile, positiveStarredLabelList)
+
+def getNegativeStarredReviews(negativeReview, twoStarredFile, oneStarredFile, labelFile, negativeStarredLabelFile):
+    input_data = getDataFromFile(labelFile)
+    review_data = getDataFromFile(negativeReview)
+
+    twoStarredList = []
+    oneStarredList = []
+    negativeStarredLabelList = []
+    i = 0
+    for item in input_data:
+        item = float(item)
+        if(item == 2):
+            twoStarredList.append(review_data[i])
+            negativeStarredLabelList.append('1')
+        else:
+            oneStarredList.append(review_data[i])
+            negativeStarredLabelList.append('0')
+        i += 1
+    write_data_to_file(twoStarredFile, twoStarredList)
+    write_data_to_file(oneStarredFile, oneStarredList)
+    write_data_to_file(negativeStarredLabelFile, negativeStarredLabelList)
+
+
 if __name__ == '__main__':
+    # getPositiveStarredReviews("../raw_data/positive.review_text","../raw_data/five_starred.review_text","../raw_data/four_starred.review_text","../raw_data/positive.review_rating","../processed_data/positive_starred.review_labels")
+    getNegativeStarredReviews("../raw_data/negative.review_text","../raw_data/two_starred.review_text","../raw_data/one_starred.review_text","../raw_data/negative.review_rating","../processed_data/negative_starred.review_labels")
+    # create_positive_test_label_file("../raw_data/unlabeled.review_rating", "../processed_data/positive.review_labels")
+    # create_negative_test_label_file("../raw_data/unlabeled.review_rating", "../processed_data/negative.review_labels")
+
     # create_test_label_file("../raw_data/unlabeled.review_rating", "../processed_data/unlabled.review_labels")
     # processData("../raw_data/negative.review_text","../processed_data/negative.review_text")
     # processData("../raw_data/positive.review_text","../processed_data/positive.review_text")
@@ -293,23 +364,23 @@ if __name__ == '__main__':
     # writeDataToFile("../processed_data/bag_of_words.list",bag_of_words)
     # writeDataToFile("../processed_data/bag_of_bigrams.list",bag_of_bigrams)
 
-    array1 = getDataFromFile("../processed_data/positive.review_text")
-    array2 = getDataFromFile("../processed_data/negative.review_text")
+    # array1 = getDataFromFile("../processed_data/positive.review_text")
+    # array2 = getDataFromFile("../processed_data/negative.review_text")
     
-    array = []
-    for line in array1:
-        bag_of_words_array = get_bag_of_words_array(line, bag_of_words)
-        bag_of_bigrams_array = get_bigram_array(line, bag_of_bigrams)
-        array.append(bag_of_words_array + bag_of_bigrams_array)
+    # array = []
+    # for line in array1:
+    #     bag_of_words_array = get_bag_of_words_array(line, bag_of_words)
+    #     bag_of_bigrams_array = get_bigram_array(line, bag_of_bigrams)
+    #     array.append(bag_of_words_array + bag_of_bigrams_array)
     
-    for line in array2:
-        bag_of_words_array = get_bag_of_words_array(line, bag_of_words)
-        bag_of_bigrams_array = get_bigram_array(line, bag_of_bigrams)
-        array.append(bag_of_words_array + bag_of_bigrams_array)
+    # for line in array2:
+    #     bag_of_words_array = get_bag_of_words_array(line, bag_of_words)
+    #     bag_of_bigrams_array = get_bigram_array(line, bag_of_bigrams)
+    #     array.append(bag_of_words_array + bag_of_bigrams_array)
     
-    with open("../processed_data/features.csv", "wb") as f:
-        writer = csv.writer(f)
-        writer.writerows(array)
+    # with open("../processed_data/features.csv", "wb") as f:
+    #     writer = csv.writer(f)
+    #     writer.writerows(array)
 
     # print word_counter_class1.most_common((100))
 
