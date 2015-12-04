@@ -49,12 +49,13 @@ def extractData(filepath):
 	# root = tree.getroot()
 
 	for review in root.findall('review'):
-		reviewRating = review.find('rating')
-		reviewRatingList.append(reviewRating.text.replace('\n',''))
-		reviewTitle = review.find('title')
-		reviewTitleList.append(reviewTitle.text.replace('\n',''))
-		reviewText = review.find('review_text')
-		reviewTextList.append(reviewText.text.replace('\n',''))
+		if review.find('review_text') is not None and review.find('rating') is not None and review.find('title') is not None:
+			reviewRating = review.find('rating')
+			reviewRatingList.append(reviewRating.text.replace('\n',''))
+			reviewTitle = review.find('title')
+			reviewTitleList.append(reviewTitle.text.replace('\n',''))
+			reviewText = review.find('review_text')
+			reviewTextList.append(reviewText.text.replace('\n',''))
 
 	print len(reviewTextList)
 	
@@ -71,29 +72,36 @@ def extractData(filepath):
 		for rating in reviewRatingList:
 			f3.write(unicode(rating)+'\n')
 
+
+
 if __name__ == '__main__':
-	cls = 'negative'
+	# cls = 'unlabeled'
+	# cls = 'negative'
 	# cls = 'positive'	
-	typ = 'type2'
+
+	typ = 'type5'
+	cls = ['positive', 'negative', 'unlabeled']
 	# # appendRootNode("../raw_data/categorical_data/positive_sports.review")
 	# # strings = ["sports","electronics","music","software"]
 	# # listOfFiles = ["../types/categorical_data/type1/camera_&_photo/"+typ+"_camera_&_photo.review","../raw_data/categorical_data/type1/cell_phones_&_service/negative_cell_phones_&_service.review","../raw_data/categorical_data/type1/computer_&_video_games/negative_computer_&_video_games.review","../raw_data/categorical_data/type1/dvd/negative_dvd.review","../raw_data/categorical_data/type1/electronics/negative_electronics.review"]
-	listOfFiles = []
-	filepath = "../types/"+typ+"/data/"
-	for folder in listdir(filepath):		
-		if isfile(folder):
-			continue
-		folderpath = filepath + folder
-		print folderpath
-		for f in listdir(folderpath):
-			if cls in str(f):
-				listOfFiles.append(join(folderpath, f))
+	for c in cls:
+		listOfFiles = []
+		filepath = "../types/"+typ+"/data/"
+		for folder in listdir(filepath):		
+			if isfile(folder):
+				continue
+			folderpath = filepath + folder
+			print folderpath
+			for f in listdir(folderpath):
+				if c in str(f):
+					listOfFiles.append(join(folderpath, f))
 
-	# print listOfFiles
-	for name in listOfFiles:
-		appendRootNode(name)
-	completeName = join("../types/"+typ+"/raw_data/", typ+"_"+cls+".review") 
-	print completeName
-	combineFiles(completeName , listOfFiles)
-	# appendRootNode("../raw_data/categorical_data/negative_sports.review")
-	extractData(completeName)
+		# print listOfFiles
+
+		completeName = join("../types/"+typ+"/raw_data/", typ+"_"+c+".review") 
+		combineFiles(completeName , listOfFiles)
+		appendRootNode(completeName)
+		print completeName	
+		# appendRootNode("../raw_data/categorical_data/negative_sports.review")
+		extractData(completeName)
+

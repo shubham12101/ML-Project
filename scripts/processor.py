@@ -349,54 +349,41 @@ def getNegativeStarredReviews(negativeReview, twoStarredFile, oneStarredFile, la
 
 
 if __name__ == '__main__':
-    # getPositiveStarredReviews("../raw_data/positive.review_text","../raw_data/five_starred.review_text","../raw_data/four_starred.review_text","../raw_data/positive.review_rating","../processed_data/positive_starred.review_labels")
-    # getNegativeStarredReviews("../raw_data/negative.review_text","../raw_data/two_starred.review_text","../raw_data/one_starred.review_text","../raw_data/negative.review_rating","../processed_data/negative_starred.review_labels")
-    # create_positive_test_label_file("../raw_data/unlabeled.review_rating", "../processed_data/positive.review_labels")
-    # create_negative_test_label_file("../raw_data/unlabeled.review_rating", "../processed_data/negative.review_labels")
-
-
-    print "ok"
-    # create_test_label_file("../raw_data/unlabeled.review_rating", "../processed_data/unlabled.review_labels")
-    typ = 'type2'
+    typ = 'type5'
     folderpath = "../types/" + typ + "/"
+    processData(folderpath + "raw_data/" + typ + "_unlabeled.review_text", folderpath + "processed_data/" + typ + "_unlabeled.review_text")
+    getPositiveStarredReviews(folderpath + "raw_data/" + typ + "_positive.review_text",folderpath + "raw_data/" + typ + "_fivestarred.review_text",folderpath + "raw_data/" + typ + "_fourstarred.review_text", folderpath + "raw_data/" + typ + "_positive.review_rating",folderpath + "processed_data/" + typ + "_positive_starred.review_labels")
+    getNegativeStarredReviews(folderpath + "raw_data/" + typ + "_negative.review_text",folderpath + "raw_data/" + typ + "_twostarred.review_text",folderpath + "raw_data/" + typ + "_onestarred.review_text", folderpath + "raw_data/" + typ + "_negative.review_rating",folderpath + "processed_data/" + typ + "_negative_starred.review_labels")
+
     processData(folderpath + "raw_data/" + typ + "_negative.review_text", folderpath + "processed_data/" + typ + "_negative.review_text")
     processData(folderpath + "raw_data/" + typ + "_positive.review_text",folderpath + "processed_data/" + typ + "_positive.review_text")
-
     get_ngram_count(folderpath + "processed_data/" + typ + "_positive.review_text", bigram_counter_class1, 2)
     get_ngram_count(folderpath + "processed_data/" + typ + "_negative.review_text", bigram_counter_class2, 2)
-
     get_ngram_count(folderpath + "processed_data/" + typ + "_positive.review_text", word_counter_class1, 1)
     get_ngram_count(folderpath + "processed_data/" + typ + "_negative.review_text", word_counter_class2, 1)   
-
-    # # create_term_frequency("../processed_data/positive.review_text", "../processed_data/negative.review_text")
     bag_of_words = generate_word_list(word_counter_class1, word_counter_class2)
-    bag_of_bigrams = generate_word_list(bigram_counter_class1, bigram_counter_class2)
-    
+    bag_of_bigrams = generate_word_list(bigram_counter_class1, bigram_counter_class2)    
     writeDataToFile(folderpath + "processed_data/" + typ +"_bag_of_words.list",bag_of_words)
     writeDataToFile(folderpath + "processed_data/" + typ +"_bag_of_bigrams.list",bag_of_bigrams)
 
-    # array1 = getDataFromFile("../processed_data/positive.review_text")
-    # array2 = getDataFromFile("../processed_data/negative.review_text")
-    
-    # array = []
-    # for line in array1:
-    #     bag_of_words_array = get_bag_of_words_array(line, bag_of_words)
-    #     bag_of_bigrams_array = get_bigram_array(line, bag_of_bigrams)
-    #     array.append(bag_of_words_array + bag_of_bigrams_array)
-    
-    # for line in array2:
-    #     bag_of_words_array = get_bag_of_words_array(line, bag_of_words)
-    #     bag_of_bigrams_array = get_bigram_array(line, bag_of_bigrams)
-    #     array.append(bag_of_words_array + bag_of_bigrams_array)
-    
-    # with open("../processed_data/features.csv", "wb") as f:
+    processData(folderpath + "raw_data/" + typ + "_fourstarred.review_text", folderpath + "processed_data/" + typ + "_fourstarred.review_text")
+    processData(folderpath + "raw_data/" + typ + "_fivestarred.review_text",folderpath + "processed_data/" + typ + "_fivestarred.review_text")
+    get_ngram_count(folderpath + "processed_data/" + typ + "_fourstarred.review_text", bigram_counter_class1, 2)
+    get_ngram_count(folderpath + "processed_data/" + typ + "_fivestarred.review_text", bigram_counter_class2, 2)
+    get_ngram_count(folderpath + "processed_data/" + typ + "_fourstarred.review_text", word_counter_class1, 1)
+    get_ngram_count(folderpath + "processed_data/" + typ + "_fivestarred.review_text", word_counter_class2, 1)
+    bag_of_words = generate_word_list(word_counter_class1, word_counter_class2)
+    bag_of_bigrams = generate_word_list(bigram_counter_class1, bigram_counter_class2)    
+    writeDataToFile(folderpath + "processed_data/" + typ +"_positive_starred_bag_of_words.list",bag_of_words)
+    writeDataToFile(folderpath + "processed_data/" + typ +"_positive_starred_bag_of_bigrams.list",bag_of_bigrams)
 
-    #     writer = csv.writer(f)
-    #     writer.writerows(array)
-
-    # print word_counter_class1.most_common((100))
-
-    # print spell_check("The big fst boy")
-    # get_term_frequency("/home/shiv/ML/ML-Project/raw_data/negative.review_text")
-    # get_inverse_document_term_frequency("/home/shiv/ML/ML-Project/raw_data/positive.review_text")
-
+    processData(folderpath + "raw_data/" + typ + "_onestarred.review_text", folderpath + "processed_data/" + typ + "_onestarred.review_text")
+    processData(folderpath + "raw_data/" + typ + "_twostarred.review_text",folderpath + "processed_data/" + typ + "_twostarred.review_text")
+    get_ngram_count(folderpath + "processed_data/" + typ + "_onestarred.review_text", bigram_counter_class1, 2)
+    get_ngram_count(folderpath + "processed_data/" + typ + "_twostarred.review_text", bigram_counter_class2, 2)
+    get_ngram_count(folderpath + "processed_data/" + typ + "_onestarred.review_text", word_counter_class1, 1)
+    get_ngram_count(folderpath + "processed_data/" + typ + "_twostarred.review_text", word_counter_class2, 1)
+    bag_of_words = generate_word_list(word_counter_class1, word_counter_class2)
+    bag_of_bigrams = generate_word_list(bigram_counter_class1, bigram_counter_class2)    
+    writeDataToFile(folderpath + "processed_data/" + typ +"_negative_starred_bag_of_words.list",bag_of_words)
+    writeDataToFile(folderpath + "processed_data/" + typ +"_negative_starred_bag_of_bigrams.list",bag_of_bigrams)
